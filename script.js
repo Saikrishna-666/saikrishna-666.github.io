@@ -5,7 +5,7 @@ let w = (c.width = window.innerWidth),
 (hh = h / 2),
   (opts = {
     // change the text in here //
-    strings: ["HAPPY", "BIRTHDAY!", "s "],
+    strings: ["HAPPY", "BIRTHDAY!", "surya srija"],
     charSize: 30,
     charSpacing: 35,
     lineHeight: 40,
@@ -376,23 +376,29 @@ function anim() {
   }
 }
 
-for (let i = 0; i < opts.strings.length; ++i) {
-  for (var j = 0; j < opts.strings[i].length; ++j) {
-    letters.push(
-      new Letter(
-        opts.strings[i][j],
-        j * opts.charSpacing +
-          opts.charSpacing / 2 -
-          (opts.strings[i].length * opts.charSize) / 2,
-        i * opts.lineHeight +
-          opts.lineHeight / 2 -
-          (opts.strings.length * opts.lineHeight) / 2
-      )
-    );
+// Start with confetti, then trigger fireworks/letter animation
+confetti({
+  particleCount: 200,
+  spread: 360,
+  origin: { x: Math.random(), y: Math.random() }
+}).then(() => {
+  for (let i = 0; i < opts.strings.length; ++i) {
+    for (let j = 0; j < opts.strings[i].length; ++j) {
+      letters.push(
+        new Letter(
+          opts.strings[i][j],
+          j * opts.charSpacing +
+            opts.charSpacing / 2 -
+            (opts.strings[i].length * opts.charSize) / 2,
+          i * opts.lineHeight +
+            opts.lineHeight / 2 -
+            (opts.strings.length * opts.lineHeight) / 2
+        )
+      );
+    }
   }
-}
-
-anim();
+  anim(); // Start the animation loop
+});
 
 window.addEventListener("resize", function () {
   w = c.width = window.innerWidth;
