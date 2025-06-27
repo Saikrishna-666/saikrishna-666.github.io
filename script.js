@@ -6,9 +6,9 @@ let w = (c.width = window.innerWidth),
   (opts = {
     // change the text in here //
     strings: ["HAPPY", "BIRTHDAY!", "surya srija"],
-    charSize: 30,
-    charSpacing: 35,
-    lineHeight: 40,
+    charSize: Math.max(18, Math.floor(window.innerWidth / 18)),
+    charSpacing: Math.max(20, Math.floor(window.innerWidth / 15)),
+    lineHeight: Math.max(24, Math.floor(window.innerWidth / 12)),
 
     cx: w / 2,
     cy: h / 2,
@@ -407,6 +407,10 @@ window.addEventListener("resize", function () {
   hw = w / 2;
   hh = h / 2;
 
+  // Responsive font and spacing
+  opts.charSize = Math.max(18, Math.floor(window.innerWidth / 18));
+  opts.charSpacing = Math.max(20, Math.floor(window.innerWidth / 15));
+  opts.lineHeight = Math.max(24, Math.floor(window.innerWidth / 12));
   ctx.font = opts.charSize + "px Verdana";
 });
 
