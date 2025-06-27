@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cake</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@latest/dist/confetti.browser.min.js"></script>
     <style>
       @import url(https://fonts.googleapis.com/css?family=Lato:300italic);
 
@@ -123,6 +125,58 @@
         h1 {
           font-size: 1.4em;
         }
+      }
+
+      #noteModal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #noteModal > div {
+        background: #fff;
+        border-radius: 16px;
+        padding: 2em 2.5em;
+        max-width: 90vw;
+        box-shadow: 0 8px 32px #0004;
+        text-align: center;
+        position: relative;
+        animation: glow 1.5s infinite alternate;
+      }
+
+      @keyframes glow {
+        0% { box-shadow: 0 0 10px #ff69b4; }
+        100% { box-shadow: 0 0 20px #ff69b4; }
+      }
+
+      #noteModal h2 {
+        font-family: 'Great Vibes', cursive;
+        font-size: 2em;
+        margin-bottom: 0.5em;
+        background: linear-gradient(45deg, #ff69b4, #ff1493, #ff69b4);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-size: 200% 100%;
+        animation: shimmer 3s linear infinite;
+      }
+
+      @keyframes shimmer {
+        0% { background-position: 0% 50%; }
+        100% { background-position: 200% 50%; }
+      }
+
+      #noteModal p {
+        font-family: 'Great Vibes', cursive;
+        font-size: 1.5em;
+        color: #333;
       }
     </style>
   </head>
@@ -283,8 +337,8 @@
         <rect x="10" y="475.571" fill="#fefae9" width="180" height="4" />
       </svg>
       <div class="text">
-      <h1>happy birthday!</h1>
-      <p class="name">S</p>
+      <h1>happy birthday!!!!!!</h1>
+      <p class="name">Srijaaaa</p>
       <p class="name">many more happy returns of the day!!!!!! </p>
 
       </div>
@@ -302,34 +356,145 @@
           <ellipse cx="55" cy="55" rx="8" ry="16" fill="#FFB6C1" transform="rotate(-45 55 55)"/>
         </svg>
       </div>
-      <button id="showNoteBtn" style="display:none; margin: 2em auto; padding: 0.7em 2em; font-size: 1.1em; background: #ff69b4; color: #fff; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 8px #0002;">Show My Wish</button>
+      <button id="showNoteBtn" style="display:none; margin: 2em auto; padding: 0.7em 2em; font-size: 1.1em; background: #ff69b4; color: #fff; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 8px #0002;">click here</button>
       <div id="noteModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); z-index:1000; align-items:center; justify-content:center;">
         <div style="background:#fff; border-radius:16px; padding:2em 2.5em; max-width:90vw; box-shadow:0 8px 32px #0004; text-align:center; position:relative;">
           <span id="closeNote" style="position:absolute; top:0.7em; right:1em; font-size:1.5em; color:#ff69b4; cursor:pointer;">&times;</span>
           <h2 style="color:#ff69b4; margin-bottom:0.5em;">A Special Wish For You!</h2>
-          <p style="font-size:1.1em; color:#333;">
-            May your birthday be filled with laughter, joy, and all your favorite things. Wishing you a fantastic year ahead! 🎉🎂💖
-          </p>
+          <p id="wishText" style="font-size:1.1em; color:#333;"></p>
         </div>
       </div>
+      <audio id="bg-music" src="hb.mp3"></audio>
 
       <script>
-        // Wait for the last animation to end
         document.querySelector('animate[attributeName="d"][id="crema"]')
           .addEventListener('endEvent', function() {
             document.getElementById('flower').style.display = 'block';
-            document.getElementById('showNoteBtn').style.display = 'block'; // Show button after animation
+            document.getElementById('showNoteBtn').style.display = 'block';
           });
+
+        function typeWishText(text, element, callback) {
+          let i = 0;
+          const signature = '\nfrom sai krishna';
+          function type() {
+            if (i <= text.length) {
+              element.textContent = text.slice(0, i);
+              i++;
+              setTimeout(type, 50);
+            } else {
+              // After main wish, type the signature with style
+              let j = 0;
+              const sigElem = document.createElement('span');
+              sigElem.style.display = 'block';
+              sigElem.style.marginTop = '1em';
+              sigElem.style.fontFamily = "'Great Vibes', cursive";
+              sigElem.style.fontSize = '1.3em';
+              sigElem.style.color = '#ff1493';
+              sigElem.style.fontStyle = 'italic';
+              element.appendChild(sigElem);
+              function typeSig() {
+                if (j <= signature.length) {
+                  sigElem.textContent = signature.slice(0, j);
+                  j++;
+                  setTimeout(typeSig, 70);
+                } else if (callback) {
+                  callback();
+                  // Start the second confetti burst after signature is typed
+                  startFinalConfetti();
+                }
+              }
+              typeSig();
+            }
+          }
+          type();
+        }
+
+        function startFinalConfetti() {
+          const duration = 15 * 1000,
+            animationEnd = Date.now() + duration,
+            defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+          function randomInRange(min, max) {
+            return Math.random() * (max - min) + min;
+          }
+
+          const interval = setInterval(function() {
+            const timeLeft = animationEnd - Date.now();
+            if (timeLeft <= 0) {
+              return clearInterval(interval);
+            }
+            const particleCount = 50 * (timeLeft / duration);
+            confetti(Object.assign({}, defaults, {
+              particleCount,
+              origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+            }));
+            confetti(Object.assign({}, defaults, {
+              particleCount,
+              origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+            }));
+          }, 250);
+        }
+
         document.getElementById('showNoteBtn').onclick = function() {
           document.getElementById('noteModal').style.display = 'flex';
+          const wish = `🎉 Happyyyy Birthday, srijaaaaaa! 🎉
+
+Wishing the cutest, kindest, and most fabulous madam in the universe the happiest birthday ever! 💖
+You light up the room with your smile, steal hearts with your charm, and rule the world  like the queen you are 👑✨
+
+Keep being adorable, unstoppable, and absolutely YOU 💫🌸
+With a smile so bright
+And a heart so kind,
+She’s cute, she’s cool,
+She’s one of a kind! ✨
+Happy Birthday, Madammmmmmmmm! 🎂💐
+`;
+          const wishTextElem = document.getElementById('wishText');
+          wishTextElem.textContent = '';
+
+          // School pride confetti (Buckeyes colors) while typing
+          const end = Date.now() + 25 * 1000;
+          const colors = ["#bb0000", "#ffffff"];
+          let confettiActive = true;
+          (function frame() {
+            confetti({
+              particleCount: 2,
+              angle: 60,
+              spread: 55,
+              origin: { x: 0, y: 0.85 }, // <-- set y near bottom
+              colors: colors,
+            });
+            confetti({
+              particleCount: 2,
+              angle: 120,
+              spread: 55,
+              origin: { x: 1, y: 0.85 }, // <-- set y near bottom
+              colors: colors,
+            });
+            if (confettiActive && Date.now() < end) {
+              requestAnimationFrame(frame);
+            }
+          })();
+
+          typeWishText(wish, wishTextElem, function() {
+            confettiActive = false;
+          });
+
+          // Play music at 20% volume when showing the wish
+          var audio = document.getElementById('bg-music');
+          if (audio) {
+            audio.volume = 0.2;
+            audio.play();
+          }
         };
+
         document.getElementById('closeNote').onclick = function() {
           document.getElementById('noteModal').style.display = 'none';
         };
-        // Optional: close modal when clicking outside the note
+
         document.getElementById('noteModal').onclick = function(e) {
           if (e.target === this) this.style.display = 'none';
         };
       </script>
-  </body>
+    </body>
 </html>
