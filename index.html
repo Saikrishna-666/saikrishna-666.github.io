@@ -5,13 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
     <title>Happy birthday</title>
+    <style>
+      body, html {
+        background: #000 !important;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+      }
+      #c {
+        display: block;
+        background: #000;
+        position: fixed;
+        top: 0; left: 0; width: 100vw; height: 100vh;
+        z-index: 0;
+      }
+    </style>
   </head>
   <body>
     <!-- Tiktok meowish -->
     <canvas id="c"></canvas>
 
-    
+
+    <!-- 🎉 Add confetti library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@latest/dist/confetti.browser.min.js"></script>
+
+    <!-- Set volume via JS -->
+    <script>
+      window.addEventListener('DOMContentLoaded', function() {
+        const bg = document.getElementById('bg-music');
+        if (bg) bg.volume = 0.2;
+      });
+    </script>
+
+    <!-- Your fireworks script -->
     <script src="script.js"></script>
   </body>
 </html>
-
